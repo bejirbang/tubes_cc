@@ -1,12 +1,14 @@
-# Panduan Setup Lokal dan Deployment Cloud
+# Panduan Setup Lokal Project Laravel
 
-Project ini adalah aplikasi Laravel untuk kebutuhan tugas besar Komputasi Awan. README ini dibuat sebagai panduan kerja tim: cara menjalankan aplikasi di lokal, cara melakukan migrasi database, dan gambaran deployment ke cloud dengan komponen Web Server, Database Server, dan Load Balancer.
+README ini berisi panduan untuk anggota tim yang ingin menjalankan project di komputer masing-masing menggunakan XAMPP atau Laragon. Bagian deployment cloud akan ditambahkan nanti setelah stack cloud ditentukan bersama.
 
 ## Ringkasan Project
 
+Project ini adalah aplikasi Laravel untuk kebutuhan tugas besar Komputasi Awan.
+
 Fitur utama aplikasi:
 
-- Autentikasi login dan register.
+- Login dan register.
 - Dashboard.
 - Manajemen guest/tamu.
 - Manajemen event.
@@ -25,7 +27,7 @@ Stack utama:
 
 ## Catatan Penting untuk Tim
 
-Jangan upload folder berikut ke Git atau ke ZIP pengumpulan source code jika tidak diminta:
+Jangan upload folder/file berikut ke Git atau ZIP source code jika tidak diminta:
 
 ```txt
 vendor/
@@ -33,29 +35,41 @@ node_modules/
 .env
 ```
 
-Folder `vendor` bisa sangat besar karena berisi dependency Laravel. Folder ini dapat dibuat ulang dengan:
+Penjelasan singkat:
+
+- `vendor/` berisi dependency PHP dari Composer dan ukurannya bisa sangat besar.
+- `node_modules/` berisi dependency frontend dari npm.
+- `.env` berisi konfigurasi lokal masing-masing anggota, termasuk database dan app key.
+
+Folder `vendor/` bisa dibuat ulang dengan:
 
 ```bash
 composer install
 ```
 
-File `.env` berisi konfigurasi lokal masing-masing anggota, jadi cukup gunakan `.env.example` sebagai template.
+Folder `node_modules/` bisa dibuat ulang dengan:
+
+```bash
+npm install
+```
+
+Gunakan `.env.example` sebagai template untuk membuat file `.env` lokal.
 
 ## Kebutuhan Software Lokal
 
-Pilih salah satu cara:
+Pilih salah satu environment lokal:
 
-- XAMPP: Apache, MySQL, PHP.
-- Laragon: Apache/Nginx, MySQL, PHP.
+- XAMPP.
+- Laragon.
 
-Tambahan yang tetap dibutuhkan:
+Software tambahan yang dibutuhkan:
 
 - PHP 8.2 atau lebih baru.
 - Composer.
-- Node.js dan npm jika ingin rebuild asset frontend.
-- Git jika project diambil dari repository.
+- Node.js dan npm, jika ingin menjalankan atau build asset frontend.
+- Git, jika project diambil dari repository.
 
-Untuk mengecek versi:
+Cek versi dengan perintah berikut:
 
 ```bash
 php -v
@@ -64,35 +78,44 @@ node -v
 npm -v
 ```
 
-## Cara Menjalankan di Lokal dengan XAMPP
+Jika `php`, `composer`, atau `npm` tidak dikenali di terminal, pastikan PATH sudah benar atau gunakan terminal bawaan XAMPP/Laragon.
+
+## Setup Lokal dengan XAMPP
 
 1. Buka XAMPP Control Panel.
-2. Jalankan service Apache dan MySQL.
-3. Letakkan project di folder yang mudah diakses, contoh:
+
+2. Jalankan service berikut:
+
+```txt
+Apache
+MySQL
+```
+
+3. Letakkan project di folder XAMPP, contoh:
 
 ```txt
 C:\xampp\htdocs\tubes_cc
 ```
 
-4. Masuk ke folder project lewat terminal:
+4. Buka terminal, lalu masuk ke folder project:
 
 ```bash
 cd C:\xampp\htdocs\tubes_cc
 ```
 
-5. Install dependency PHP:
+5. Install dependency Laravel:
 
 ```bash
 composer install
 ```
 
-6. Buat file `.env` dari template:
+6. Buat file `.env` dari `.env.example`:
 
 ```bash
 copy .env.example .env
 ```
 
-Jika memakai Git Bash atau terminal Linux/macOS:
+Jika menggunakan Git Bash:
 
 ```bash
 cp .env.example .env
@@ -104,19 +127,19 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-8. Buat database baru lewat phpMyAdmin:
+8. Buka phpMyAdmin:
 
 ```txt
 http://localhost/phpmyadmin
 ```
 
-Contoh nama database:
+9. Buat database baru, contoh:
 
 ```txt
 tubes_cc
 ```
 
-9. Ubah konfigurasi database di file `.env`:
+10. Buka file `.env`, lalu sesuaikan konfigurasi database:
 
 ```env
 DB_CONNECTION=mysql
@@ -127,41 +150,53 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-10. Jalankan migrasi database:
+Catatan untuk XAMPP default:
+
+- `DB_USERNAME=root`
+- `DB_PASSWORD=` dikosongkan
+
+11. Jalankan migrasi database:
 
 ```bash
 php artisan migrate
 ```
 
-11. Jika ingin mengisi data awal dari seeder:
+12. Jika project membutuhkan data awal dari seeder:
 
 ```bash
 php artisan db:seed
 ```
 
-Atau reset database dan isi ulang:
+Atau jika ingin reset database dan isi ulang dari awal:
 
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-12. Jalankan aplikasi:
+13. Jalankan aplikasi:
 
 ```bash
 php artisan serve
 ```
 
-13. Buka aplikasi di browser:
+14. Buka aplikasi di browser:
 
 ```txt
 http://127.0.0.1:8000
 ```
 
-## Cara Menjalankan di Lokal dengan Laragon
+## Setup Lokal dengan Laragon
 
 1. Buka Laragon.
-2. Jalankan service Apache/Nginx dan MySQL.
-3. Simpan project di folder:
+
+2. Jalankan service berikut:
+
+```txt
+Apache atau Nginx
+MySQL
+```
+
+3. Letakkan project di folder Laragon:
 
 ```txt
 C:\laragon\www\tubes_cc
@@ -173,7 +208,7 @@ C:\laragon\www\tubes_cc
 cd C:\laragon\www\tubes_cc
 ```
 
-5. Install dependency:
+5. Install dependency Laravel:
 
 ```bash
 composer install
@@ -185,14 +220,27 @@ composer install
 copy .env.example .env
 ```
 
+Jika menggunakan Git Bash:
+
+```bash
+cp .env.example .env
+```
+
 7. Generate application key:
 
 ```bash
 php artisan key:generate
 ```
 
-8. Buat database melalui Laragon, phpMyAdmin, atau Adminer.
-9. Sesuaikan file `.env`:
+8. Buat database baru melalui Laragon, phpMyAdmin, atau Adminer.
+
+Contoh nama database:
+
+```txt
+tubes_cc
+```
+
+9. Sesuaikan konfigurasi database di `.env`:
 
 ```env
 DB_CONNECTION=mysql
@@ -202,6 +250,11 @@ DB_DATABASE=tubes_cc
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+
+Catatan:
+
+- Laragon default biasanya memakai user `root` tanpa password.
+- Jika MySQL Laragon memakai password, isi `DB_PASSWORD` sesuai password tersebut.
 
 10. Jalankan migrasi:
 
@@ -215,41 +268,53 @@ php artisan migrate
 php artisan db:seed
 ```
 
+Atau reset database dan seed ulang:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
 12. Jalankan aplikasi:
 
 ```bash
 php artisan serve
 ```
 
-13. Buka:
+13. Buka aplikasi:
 
 ```txt
 http://127.0.0.1:8000
 ```
 
-Jika Laragon menggunakan pretty URL, aplikasi juga bisa diakses dengan domain lokal seperti:
+Jika menggunakan fitur pretty URL Laragon, aplikasi juga bisa diakses melalui domain lokal seperti:
 
 ```txt
 http://tubes_cc.test
 ```
 
-Pastikan document root mengarah ke folder `public`.
+Pastikan document root mengarah ke folder:
 
-## Build Asset Frontend
+```txt
+public
+```
 
-Jika tampilan CSS/JS tidak berubah setelah edit file di `resources`, install dependency Node:
+## Setup Asset Frontend
+
+Project ini menggunakan Vite dan Tailwind CSS. Jika hanya ingin menjalankan aplikasi dan asset `public/build` sudah tersedia, langkah npm bisa dilewati.
+
+Jika ingin mengubah file frontend di `resources`, install dependency Node:
 
 ```bash
 npm install
 ```
 
-Untuk development:
+Untuk mode development:
 
 ```bash
 npm run dev
 ```
 
-Untuk build production:
+Untuk build asset production:
 
 ```bash
 npm run build
@@ -269,7 +334,7 @@ Melihat status migrasi:
 php artisan migrate:status
 ```
 
-Menjalankan migrasi baru:
+Menjalankan migrasi:
 
 ```bash
 php artisan migrate
@@ -299,6 +364,58 @@ Menjalankan seeder saja:
 php artisan db:seed
 ```
 
+## Perintah Laravel yang Berguna
+
+Membersihkan cache config, route, view, dan cache aplikasi:
+
+```bash
+php artisan optimize:clear
+```
+
+Membuat ulang autoload Composer:
+
+```bash
+composer dump-autoload
+```
+
+Membuat storage link:
+
+```bash
+php artisan storage:link
+```
+
+Menjalankan server lokal:
+
+```bash
+php artisan serve
+```
+
+## Alur Kerja Setelah Pull dari Git
+
+Setelah mengambil update terbaru dari repository:
+
+```bash
+git pull
+composer install
+php artisan migrate
+php artisan optimize:clear
+```
+
+Jika ada perubahan frontend atau `package.json` berubah:
+
+```bash
+npm install
+npm run build
+```
+
+Jika ada perubahan seeder dan ingin reset data lokal:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Hati-hati: perintah `migrate:fresh --seed` akan menghapus data lama di database lokal.
+
 ## Troubleshooting Lokal
 
 Jika muncul error `No application encryption key has been specified`:
@@ -309,533 +426,44 @@ php artisan key:generate
 
 Jika muncul error koneksi database:
 
-- Pastikan MySQL berjalan.
+- Pastikan MySQL berjalan di XAMPP/Laragon.
 - Pastikan database sudah dibuat.
-- Pastikan `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di `.env` benar.
+- Pastikan konfigurasi `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di `.env` benar.
+- Jalankan ulang migrasi setelah konfigurasi database benar.
 
-Jika route, config, atau tampilan seperti tidak update:
+Jika halaman error setelah mengubah `.env`:
 
 ```bash
 php artisan optimize:clear
 ```
 
-Jika storage upload/public file tidak bisa diakses:
+Jika class/controller/model tidak terbaca:
 
 ```bash
-php artisan storage:link
-```
-
-Jika dependency PHP error:
-
-```bash
-composer install
 composer dump-autoload
 ```
 
-Jika asset frontend error:
+Jika tampilan CSS/JS tidak sesuai:
 
 ```bash
 npm install
 npm run build
 ```
 
-## Requirement Tugas Besar Cloud
+Jika port `8000` sudah digunakan:
 
-Setiap kelompok diwajibkan melakukan deployment aplikasi ke layanan cloud.
+```bash
+php artisan serve --port=8001
+```
 
-Aplikasi yang digunakan boleh aplikasi lama yang pernah dibuat sebelumnya.
-
-Infrastruktur cloud minimal harus memuat:
-
-1. Web Server.
-2. Database Server.
-3. Load Balancer.
-
-Output yang diharapkan:
-
-- Aplikasi dapat diakses secara online melalui layanan cloud.
-
-Platform cloud yang boleh digunakan:
-
-- Microsoft Azure.
-- Amazon Web Services (AWS).
-- Google Cloud Platform (GCP).
-- Oracle Cloud.
-- Layanan cloud lain yang mendukung kebutuhan server.
-
-Dokumentasi yang wajib dibuat:
-
-- Arsitektur cloud yang digunakan.
-- Konfigurasi layanan.
-- Proses deployment.
-- Bukti aplikasi berhasil diakses secara online.
-
-Saat presentasi/demo, kelompok perlu menjelaskan:
-
-- Arsitektur cloud yang digunakan.
-- Cara deployment aplikasi.
-- Pembagian layanan server.
-- Implementasi load balancer.
-- Hasil akhir aplikasi yang berjalan di cloud.
-
-## Arsitektur Cloud yang Disarankan
-
-Arsitektur minimal:
+Lalu buka:
 
 ```txt
-User / Browser
-      |
-      v
-Load Balancer
-      |
-      v
-Web Server
-      |
-      v
-Database Server
+http://127.0.0.1:8001
 ```
 
-Arsitektur yang lebih baik untuk demo load balancer:
+## Catatan Deployment
 
-```txt
-User / Browser
-      |
-      v
-Load Balancer
-      |
-      +------------------+
-      |                  |
-      v                  v
-Web Server 1        Web Server 2
-      |                  |
-      +--------+---------+
-               |
-               v
-        Database Server
-```
+Panduan deployment cloud belum ditulis detail di README ini.
 
-Penjelasan komponen:
-
-- Load Balancer menerima request dari user dan meneruskannya ke web server.
-- Web Server menjalankan aplikasi Laravel.
-- Database Server menyimpan data aplikasi.
-
-Untuk kebutuhan tubes, Load Balancer dengan satu Web Server biasanya masih bisa dipakai untuk menunjukkan komponen arsitektur. Namun, dua Web Server akan lebih meyakinkan karena benar-benar menunjukkan pembagian traffic.
-
-## Contoh Pembagian Layanan Cloud
-
-Contoh umum di AWS:
-
-- Load Balancer: AWS Elastic Load Balancer.
-- Web Server: EC2 instance Ubuntu.
-- Database Server: Amazon RDS MySQL atau EC2 terpisah dengan MySQL.
-
-Contoh umum di Azure:
-
-- Load Balancer: Azure Load Balancer atau Application Gateway.
-- Web Server: Azure Virtual Machine Ubuntu.
-- Database Server: Azure Database for MySQL atau VM terpisah dengan MySQL.
-
-Contoh umum di GCP:
-
-- Load Balancer: Cloud Load Balancing.
-- Web Server: Compute Engine VM.
-- Database Server: Cloud SQL MySQL atau VM terpisah dengan MySQL.
-
-Contoh umum di Oracle Cloud:
-
-- Load Balancer: Oracle Cloud Load Balancer.
-- Web Server: Compute Instance Ubuntu.
-- Database Server: MySQL Database Service atau Compute Instance terpisah.
-
-## Langkah Deployment Cloud
-
-Bagian ini menggunakan pendekatan umum yang bisa diterapkan di AWS, Azure, GCP, Oracle Cloud, atau cloud lain.
-
-### 1. Siapkan Database Server
-
-1. Buat database server MySQL/MariaDB.
-2. Buat database baru, contoh:
-
-```txt
-tubes_cc
-```
-
-3. Buat user database khusus aplikasi.
-4. Izinkan koneksi dari Web Server ke Database Server.
-5. Catat informasi berikut:
-
-```txt
-DB_HOST
-DB_PORT
-DB_DATABASE
-DB_USERNAME
-DB_PASSWORD
-```
-
-Catatan keamanan:
-
-- Jangan membuka database ke semua IP jika tidak perlu.
-- Lebih baik database hanya bisa diakses dari Web Server.
-
-### 2. Siapkan Web Server
-
-1. Buat VM/instance Ubuntu.
-2. Install package dasar:
-
-```bash
-sudo apt update
-sudo apt install nginx mysql-client unzip git curl -y
-```
-
-3. Install PHP dan extension yang dibutuhkan Laravel:
-
-```bash
-sudo apt install php php-cli php-fpm php-mysql php-mbstring php-xml php-curl php-zip php-bcmath -y
-```
-
-4. Install Composer:
-
-```bash
-curl -sS https://getcomposer.org/installer -o composer-setup.php
-sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-composer -V
-```
-
-5. Ambil source code project:
-
-```bash
-cd /var/www
-sudo git clone <URL_REPOSITORY> tubes_cc
-cd tubes_cc
-```
-
-Jika tidak menggunakan Git, upload ZIP project lalu extract ke:
-
-```txt
-/var/www/tubes_cc
-```
-
-Jangan upload folder `vendor` jika ingin ukuran upload lebih kecil. Setelah source ada di server, jalankan `composer install`.
-
-### 3. Install Dependency di Server
-
-Masuk ke folder project:
-
-```bash
-cd /var/www/tubes_cc
-```
-
-Install dependency production:
-
-```bash
-composer install --no-dev --optimize-autoloader
-```
-
-Jika server juga digunakan untuk build asset:
-
-```bash
-npm install
-npm run build
-```
-
-Jika asset sudah ada di `public/build`, langkah npm bisa dilewati.
-
-### 4. Konfigurasi File .env Production
-
-Buat file `.env`:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-
-```bash
-nano .env
-```
-
-Contoh konfigurasi production:
-
-```env
-APP_NAME="Tubes Cloud"
-APP_ENV=production
-APP_KEY=
-APP_DEBUG=false
-APP_URL=http://IP_ATAU_DOMAIN_LOAD_BALANCER
-
-DB_CONNECTION=mysql
-DB_HOST=IP_ATAU_HOST_DATABASE_SERVER
-DB_PORT=3306
-DB_DATABASE=tubes_cc
-DB_USERNAME=user_database
-DB_PASSWORD=password_database
-
-SESSION_DRIVER=database
-CACHE_STORE=database
-QUEUE_CONNECTION=database
-```
-
-Generate key:
-
-```bash
-php artisan key:generate
-```
-
-### 5. Jalankan Migrasi di Server
-
-Jalankan:
-
-```bash
-php artisan migrate
-```
-
-Jika butuh data awal:
-
-```bash
-php artisan db:seed
-```
-
-Untuk reset total saat masih demo/testing:
-
-```bash
-php artisan migrate:fresh --seed
-```
-
-Hati-hati: `migrate:fresh --seed` akan menghapus isi tabel lama.
-
-### 6. Set Permission Laravel
-
-Laravel perlu permission write ke folder `storage` dan `bootstrap/cache`:
-
-```bash
-sudo chown -R www-data:www-data /var/www/tubes_cc
-sudo chmod -R 775 /var/www/tubes_cc/storage
-sudo chmod -R 775 /var/www/tubes_cc/bootstrap/cache
-```
-
-Buat storage link:
-
-```bash
-php artisan storage:link
-```
-
-### 7. Konfigurasi Nginx
-
-Buat file konfigurasi:
-
-```bash
-sudo nano /etc/nginx/sites-available/tubes_cc
-```
-
-Contoh konfigurasi:
-
-```nginx
-server {
-    listen 80;
-    server_name _;
-    root /var/www/tubes_cc/public;
-
-    index index.php index.html;
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/php-fpm.sock;
-    }
-
-    location ~ /\.ht {
-        deny all;
-    }
-}
-```
-
-Catatan:
-
-- Pada beberapa server, socket PHP bisa berbeda, misalnya `/run/php/php8.2-fpm.sock` atau `/run/php/php8.3-fpm.sock`.
-- Cek socket PHP dengan:
-
-```bash
-ls /run/php
-```
-
-Aktifkan konfigurasi:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/tubes_cc /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-```
-
-### 8. Optimasi Laravel untuk Production
-
-Jalankan:
-
-```bash
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-Jika ada perubahan `.env`, bersihkan cache dulu:
-
-```bash
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-### 9. Siapkan Load Balancer
-
-1. Buat Load Balancer di platform cloud.
-2. Tambahkan Web Server sebagai backend/target.
-3. Arahkan listener HTTP port 80 ke backend Web Server port 80.
-4. Buat health check ke path:
-
-```txt
-/
-```
-
-atau:
-
-```txt
-/login
-```
-
-5. Pastikan security group/firewall:
-
-- Load Balancer menerima traffic dari internet pada port 80/443.
-- Web Server menerima traffic hanya dari Load Balancer pada port 80/443.
-- Database Server menerima traffic hanya dari Web Server pada port 3306.
-
-6. Setelah Load Balancer aktif, akses aplikasi lewat DNS/IP Load Balancer.
-
-### 10. Jika Menggunakan Dua Web Server
-
-Jika menggunakan Web Server 1 dan Web Server 2:
-
-1. Deploy source code yang sama ke kedua server.
-2. Isi `.env` dengan konfigurasi yang sama, terutama:
-
-```env
-APP_KEY=nilai_yang_sama_di_semua_web_server
-DB_HOST=database_server_yang_sama
-```
-
-3. Keduanya harus mengarah ke Database Server yang sama.
-4. Jalankan migrasi cukup dari salah satu Web Server.
-5. Daftarkan kedua Web Server ke Load Balancer.
-
-Catatan penting:
-
-- `APP_KEY` harus sama di semua Web Server agar session dan enkripsi Laravel konsisten.
-- Jika ada file upload, storage perlu strategi tambahan seperti shared storage atau object storage. Untuk demo sederhana, fitur upload bisa dibatasi atau hanya gunakan satu Web Server.
-
-## Checklist Deployment
-
-Gunakan checklist ini sebelum presentasi:
-
-- Aplikasi bisa diakses dari internet melalui URL Load Balancer.
-- Login/register bisa digunakan.
-- Database tersambung.
-- Migrasi sudah dijalankan.
-- Data utama tampil.
-- Form tambah/edit/hapus data berjalan.
-- Load Balancer punya backend Web Server yang sehat.
-- Security group/firewall sudah sesuai.
-- `APP_ENV=production`.
-- `APP_DEBUG=false`.
-- Web root mengarah ke folder `public`.
-- Screenshot bukti akses online sudah disimpan.
-
-## Dokumentasi yang Perlu Dikumpulkan
-
-Minimal dokumentasi tubes sebaiknya memuat:
-
-1. Deskripsi aplikasi.
-2. Diagram arsitektur cloud.
-3. Daftar layanan cloud yang digunakan.
-4. Spesifikasi server:
-
-```txt
-Load Balancer:
-Web Server:
-Database Server:
-OS:
-PHP version:
-Database version:
-```
-
-5. Konfigurasi jaringan:
-
-```txt
-Port 80/443 untuk akses web
-Port 3306 untuk koneksi database internal
-```
-
-6. Langkah deployment.
-7. Konfigurasi `.env` tanpa menampilkan password asli.
-8. Screenshot:
-
-- Halaman aplikasi berhasil dibuka lewat URL cloud.
-- Dashboard cloud yang menampilkan Load Balancer.
-- Backend/target Web Server pada Load Balancer.
-- Database Server.
-- Hasil health check.
-
-9. Pembagian tugas anggota kelompok.
-10. Kendala dan solusi.
-
-## Alur Kerja Tim
-
-Workflow yang disarankan:
-
-1. Satu orang bertugas mengelola repository/source code.
-2. Satu orang bertugas menyiapkan Web Server.
-3. Satu orang bertugas menyiapkan Database Server.
-4. Satu orang bertugas menyiapkan Load Balancer dan dokumentasi arsitektur.
-5. Setelah deployment selesai, semua anggota melakukan testing aplikasi online.
-
-Saat ada perubahan kode:
-
-```bash
-git pull
-composer install
-npm install
-npm run build
-php artisan migrate
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-Jika hanya perubahan backend tanpa dependency baru:
-
-```bash
-git pull
-php artisan migrate
-php artisan optimize:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-```
-
-## Catatan Akhir
-
-Untuk kebutuhan tugas besar, target utama bukan hanya aplikasinya berjalan, tetapi juga mampu menjelaskan bagaimana aplikasi tersebut ditempatkan di cloud.
-
-Pastikan saat demo bisa menjelaskan alur berikut:
-
-```txt
-User membuka URL cloud
--> request masuk ke Load Balancer
--> diteruskan ke Web Server
--> aplikasi Laravel memproses request
--> data dibaca/ditulis ke Database Server
--> response dikirim kembali ke user
-```
+Nanti setelah stack cloud ditentukan, bagian deployment akan ditambahkan sesuai layanan yang dipilih, misalnya AWS, Azure, GCP, Oracle Cloud, atau provider lain. Dokumentasi deployment nantinya akan membahas Web Server, Database Server, Load Balancer, konfigurasi layanan, dan bukti aplikasi berhasil diakses online.
